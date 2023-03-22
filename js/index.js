@@ -4,9 +4,9 @@ const chat = {
     author: "Pedro",
     init() {
         this.fetchMessages();
-
     },
-    sendMessage() {
+    sendMessage(data) {
+      const self = this
         fetch('https://dev2chat.onrender.com/message',
         {
             method:'POST',
@@ -17,13 +17,14 @@ const chat = {
             body: JSON.stringify(data)
 
         })
-        document.querySelector('#chatForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            console.log('berichtje');
+        .then(function(){
+            self.fetchMessages();
         })
-        this.fetchMessages
+
+        
     },
     fetchMessages() {
+        document.querySelector('#messageContainer').innerHTML = ''
         fetch('https://dev2chat.onrender.com/messages')
         .then(incommingMessage => incommingMessage.json())
         .then(function (data) {
@@ -48,7 +49,7 @@ const chat = {
                 </p>
             </div>
       `
-
+            
           document.querySelector('#messageContainer').insertAdjacentHTML('beforeend', htmlMessage)
             
            });
@@ -59,12 +60,24 @@ const chat = {
         
     },
     renderMessage(message) {
+        
     }
 
+    
+
 }
 
-function karsten() {
-    const lover = "dreamPartner";
-}
+let data = {
+    author: chat.author,
+    message: ''
+ }
+document.querySelector('#chatForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    console.log('test')
+    data.message = document.querySelector('#chatInput').value
+    chat.sendMessage(data);
+    
+})
+
 
 chat.init();
